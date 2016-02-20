@@ -7,12 +7,15 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Main {
 
 	public static void main(String[] args) {
-		System.out.println(getCount("pain", "07928"));
-		System.out.println(getCount("pain", "07asdf28"));
+		doSmth("Pain knee", "07928");
+		//getIds("pain", "07928");
+		//System.out.println(getCount("pain", "07asdf28"));
 	}
 
 	/*
@@ -67,7 +70,78 @@ public class Main {
 		}
 		return 0;
 	}
-
+	public static void doSmth (String fullName, String zipcode)
+	{
+		String[] splitString = fullName.split(" ");		
+		HashMap<Integer, Integer> ids = new HashMap<Integer, Integer>();
+		for (String name : splitString)
+		{
+			ids = getIds(name, zipcode, ids);
+		}
+		System.out.println(ids);
+	}
+	
+	
+	
+	
+	public static HashMap<Integer, Integer> getIds (String disease, String zipcode, HashMap<Integer, Integer> ids){
+		
+		Connection con = null;
+		PreparedStatement stmt = null;
+		
+		try {
+			con = DriverManager.getConnection( // apologies for hardcoding the password
+					"jdbc:mysql://linktothepast.cm0t4637eidl.us-east-1.rds.amazonaws.com:3306/portal","triforce","turtlerock");
+			stmt = con.prepareStatement(""
+					+ " select s1.requestlog_id as id from ( "
+					+ "  select requestlog_id  "
+					+ " from requestlog_terms "
+					+ "  where word=?  "
+					+ " limit 1000  )"
+					+ " s1 "
+					+ "join requestlog on s1.requestlog_id=requestlog.id "
+					+ "where requestlog.zip = ?; ");
+			stmt.setString(1, disease);
+			stmt.setString(2, zipcode);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				Integer tempId = rs.getInt("id");
+				if (ids.containsKey(tempId))
+				{
+					Integer tempValue = (Integer) ids.get(tempId);
+					tempValue++;
+					ids.put(tempId, tempValue);
+					
+				}
+				else
+				{
+					ids.put(tempId, 1);
+				}
+			}
+			return ids;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (stmt != null) { stmt.close(); }
+			}
+			catch (Exception e) {
+				System.out.println("Error: Query prep failed");
+			}
+			try {
+				if (con != null) { con.close(); }
+			}
+			catch (Exception e) {
+				System.out.println("Error: Connection failed");
+			}
+		}
+		System.out.println(ids);
+		return ids;
+		//return {0,0};
+	}
+	
 }
 
 
