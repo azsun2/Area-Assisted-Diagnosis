@@ -10,21 +10,52 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Arrays;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 public class Main {
 
 	public static void main(String[] args) {
 		//parseNamesAndRun("Pain knee", "07928");
-		String[] names = {"Pain knee", "Pain Back"};
+		String[] names = {"Pain knee", "Pain back", "Pain arm"};
 		int[] counts = countMultiNamesOneZip(names, "07928");
-		for(int i : counts)
-		{
-			System.out.println(i);
-		}
+		getFinalArrays(counts, names);
 		Integer[] i = {1, 3281};
 		//getCount(i);
 		//getIds("pain", "07928");
 		//System.out.println(getCount("pain", "07asdf28"));
+	}
+	
+	public static void getFinalArrays (int[] counts, String[] names)
+	{
+		int[] countsClone = counts.clone();
+		String[] namesClone = names.clone();
+		
+		for(int j = 0; j < counts.length; j++)
+		{
+			int largest = j;
+			for(int i = j; i < counts.length; i++)
+			{
+				if( countsClone[i] > countsClone[largest])
+				{
+					largest = i;
+				}
+			}
+			int temp = countsClone[j];
+			String tempString = namesClone[j];
+			countsClone[j] = countsClone[largest];
+			countsClone[largest] = temp;
+			namesClone[j] = tempString;
+		}
+		counts = countsClone;
+		names = namesClone;
+		/*for(int i = 0; i < names.length; i++)
+		{
+			System.out.print(names[i] + " ");
+			System.out.println(counts[i]);
+		}*/
 	}
 
 	public static int[] countMultiNamesOneZip(String[] names, String zipcode)
