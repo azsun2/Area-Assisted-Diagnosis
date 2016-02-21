@@ -11,27 +11,27 @@ import java.util.HashMap;
 
 
 public class Main {
-	public static int[] countMultiNamesOneZip(String[] names, String zipcode)
+	public static int[] countMultiNamesOneZip(String[] names, String zipcode, int radius)
 	{
 		int[] countArray = new int[names.length];
 		int i = 0;
 		for(String name : names)
 		{
-			countArray[i] = parseNamesAndRun(name, zipcode);
+			countArray[i] = parseNamesAndRun(name, zipcode, radius);
 			i++;
 		}
 		return countArray;
 		
 	}
 	
-	public static int parseNamesAndRun (String fullName, String zipcode)
+	public static int parseNamesAndRun (String fullName, String zipcode, int radius)
 	{
 		String[] splitString = fullName.split(" ");		
 		HashMap<Integer, Integer> ids = new HashMap<Integer, Integer>();
 		int length = splitString.length;
 		for (String name : splitString)
 		{
-			ids = getIds(name, zipcode, ids);
+			ids = getIds(name, zipcode, ids, radius);
 		}
 		int count = 0;
 		for (Integer id : ids.keySet()){
@@ -50,8 +50,8 @@ public class Main {
 		return s;
 	}
 	
-	public static HashMap<Integer, Integer> getIds (String disease, String zipcode, HashMap<Integer, Integer> ids){
-		NearZip nz = new NearZip();
+	public static HashMap<Integer, Integer> getIds (String disease, String zipcode, HashMap<Integer, Integer> ids, int radius){
+		NearZip nz = new NearZip(radius);
 		ArrayList<String> al = nz.zipNeighbors(zipcode);
 		int numZips = al.size();
 		String placeholder = genPlaceHolders(numZips); 

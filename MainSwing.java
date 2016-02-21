@@ -1,4 +1,4 @@
-
+package test2;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -114,7 +114,7 @@ public class MainSwing extends JFrame {
 				for(int c = 0; c < names.size(); c++){
 					disease[c] = names.get(c);
 				}
-				int occurence[] = Main.countMultiNamesOneZip(disease,zip);
+				int occurence[] = Main.countMultiNamesOneZip(disease,zip, dist);
 				//HashMap<String, Integer> finalMap = Main.getFinalArrays(occurence,disease);
 				
 				int[] countsClone = occurence.clone();
@@ -191,8 +191,8 @@ public class MainSwing extends JFrame {
 		gbc_lblRange.gridy = 5;
 		panel.add(lblRange, gbc_lblRange);
 		
-		String distances[]= {"1km","2km","3km","4km","5km"};
-		comboBox = new JComboBox();
+		String distances[]= {"0km","1km","2km","3km","4km","5km"};
+		comboBox = new JComboBox(distances);
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -248,6 +248,9 @@ public class MainSwing extends JFrame {
 		panel_1.add(btnBack, gbc_btnBack);
 	}
 	public int check(String a) {
+		if(a.equals("0km")){
+			return 0;
+		}
 		if(a.equals("1km")){
 			return 1;
 		}

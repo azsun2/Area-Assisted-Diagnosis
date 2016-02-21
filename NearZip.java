@@ -8,8 +8,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NearZip {
+	private String radiusKm;
+	private String maxZips;
+	
+	NearZip(int rK, int mZ){
+		radiusKm = Integer.toString(rK);
+		maxZips = Integer.toString(mZ);
+	}
+	
+	NearZip(int rK){
+		radiusKm = Integer.toString(rK);
+		maxZips = "90";  // upper bound
+	}
+	
 	public static void main(String[] args) throws Exception {// hardcoding postal code to check
-		NearZip ucr = new NearZip();
+		NearZip ucr = new NearZip(5);
 		
 		for (String s : ucr.zipNeighbors("10009")){
 			System.out.println(s);
@@ -17,8 +30,6 @@ public class NearZip {
 	}
 
 	public ArrayList<String> zipNeighbors(String zip){
-		String radiusKm = "10";
-		String maxZips = "30"; // upper bound
 		ArrayList<String> zips = new ArrayList<String>();
 		URL oracle;
 		try {
