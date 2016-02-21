@@ -88,7 +88,8 @@ public class MainSwing extends JFrame {
 		
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
+		GhostText ghostText = new GhostText(textField, "Please enter a illness");
+		gbc_textField.insets = new Insets(0, 5, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 2;
 		gbc_textField.gridy = 2;
@@ -141,7 +142,8 @@ public class MainSwing extends JFrame {
 		
 		textField_2 = new JTextField();
 		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		gbc_textField_2.insets = new Insets(0, 0, 5, 5);
+		GhostText ghostText1 = new GhostText(textField_2, "Please enter a valid zipcode");
+		gbc_textField_2.insets = new Insets(0, 5, 5, 5);
 		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_2.gridx = 2;
 		gbc_textField_2.gridy = 6;
