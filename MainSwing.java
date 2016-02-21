@@ -1,29 +1,21 @@
-package test2;
-
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
-import java.awt.FlowLayout;
-
 import javax.swing.JLabel;
-import javax.print.attribute.standard.NumberUpSupported;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JTextField;
 
-import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -34,16 +26,12 @@ import javax.swing.JScrollPane;
 
 public class MainSwing extends JFrame {
 	private String first;
-	private String second;
 	private int a;
-	private int b;
 	private ArrayList<String> names = new ArrayList<String>();
 	private ArrayList<Integer> number = new ArrayList<Integer>();
 	private String zip;
 	private JTextField textField;
-	private JTextField textField_1;
 	private JLabel lblQuery;
-	private JLabel lblQuery_1;
 	private JPanel panel_1;
 	private JButton btnBack;
 	private JTable table;
@@ -79,7 +67,16 @@ public class MainSwing extends JFrame {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		
-		final JPanel panel = new JPanel();
+		//Input Screen
+			File imageURL = new File("hackbrain.png");
+			Image image = null;
+			try {
+				image = ImageIO.read(imageURL);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		final BackgroundPanel panel = new BackgroundPanel(image);
 		getContentPane().add(panel, "name_1455962462584217000");
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
@@ -97,7 +94,7 @@ public class MainSwing extends JFrame {
 		
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
-		GhostText ghostText = new GhostText(textField, "Please enter a illness");
+		GhostText ghostText = new GhostText(textField, "Please enter a disease");
 		gbc_textField.insets = new Insets(0, 5, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 2;
@@ -225,5 +222,4 @@ public class MainSwing extends JFrame {
 		gbc_btnBack.gridy = 1;
 		panel_1.add(btnBack, gbc_btnBack);
 	}
-
 }
