@@ -1,6 +1,4 @@
-//GhostText ghostText = new GhostText(textField, "Please enter a illness");
-//GhostText ghostText1 = new GhostText(textField_1, "Please enter a valid zipcode");
-
+package test2;
 
 import java.awt.Color;
 import java.awt.Dimension;

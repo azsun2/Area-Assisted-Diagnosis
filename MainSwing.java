@@ -1,3 +1,5 @@
+package test2;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -8,18 +10,25 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import java.awt.FlowLayout;
+
 import javax.swing.JLabel;
 import javax.print.attribute.standard.NumberUpSupported;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JTextField;
+
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.CardLayout;
+
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
@@ -95,25 +104,6 @@ public class MainSwing extends JFrame {
 		gbc_textField.gridy = 2;
 		panel.add(textField, gbc_textField);
 		textField.setColumns(10);
-		/*
-		lblQuery_1 = new JLabel("Query 2");
-		GridBagConstraints gbc_lblQuery_1 = new GridBagConstraints();
-		gbc_lblQuery_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblQuery_1.gridx = 2;
-		gbc_lblQuery_1.gridy = 3;
-		panel.add(lblQuery_1, gbc_lblQuery_1);
-		*/
-		/*
-		textField_1 = new JTextField();
-		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
-		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_1.gridx = 2;
-		gbc_textField_1.gridy = 4;
-		panel.add(textField_1, gbc_textField_1);
-		textField_1.setColumns(10);
-		*/
-		
 		JButton btnCompare = new JButton("Compare");
 		btnCompare.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -122,12 +112,34 @@ public class MainSwing extends JFrame {
 					disease[c] = names.get(c);
 				}
 				int occurence[] = Main.countMultiNamesOneZip(disease,zip);
-				Main.getFinalArrays(occurence,disease);
+				//HashMap<String, Integer> finalMap = Main.getFinalArrays(occurence,disease);
+				
+				int[] countsClone = occurence.clone();
+				String[] namesClone = disease.clone();
+				
+				for(int j = 0; j < occurence.length; j++)
+				{
+					int largest = j;
+					for(int i = j; i < occurence.length; i++)
+					{
+						if( countsClone[i] > countsClone[largest])
+						{
+							largest = i;
+						}
+					}
+					int temp = countsClone[j];
+					String tempString = namesClone[j];
+					countsClone[j] = countsClone[largest];
+					countsClone[largest] = temp;
+					namesClone[j] = namesClone[largest];
+					namesClone[largest] = tempString;
+				}
+				
 				((DefaultTableModel) table.getModel()).setRowCount(names.size());
 				((DefaultTableModel) table.getModel()).setColumnCount(2);
 				for(int c = 0; c < names.size(); c++){
-					table.getModel().setValueAt(disease[c], c, 0);
-					table.getModel().setValueAt(occurence[c], c, 1);
+					table.getModel().setValueAt(namesClone[c], c, 0);
+					table.getModel().setValueAt(countsClone[c], c, 1);
 				}
 				((CardLayout) getContentPane().getLayout()).next(getContentPane());
 			}
@@ -149,16 +161,22 @@ public class MainSwing extends JFrame {
 		gbc_textField_2.gridy = 6;
 		panel.add(textField_2, gbc_textField_2);
 		textField_2.setColumns(10);
-		
 		btnSubmit = new JButton("Submit");
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Filter filter = new Filter();
 				first = textField.getText();
 				zip = textField_2.getText();
-				textField_2.setEditable(false);
-				names.add(first);
-				number.add(a);
-				textField.setText("");
+				if (filter.disease(first) && filter.zipcode(zip)){
+					names.add(first);
+					number.add(a);
+					textField.setText("");
+					textField_2.setEditable(false);
+				}else{
+					textField.setText("");
+					textField_2.setText("");
+				}
+				
 			}
 		});
 		GridBagConstraints gbc_btnSubmit = new GridBagConstraints();
@@ -199,7 +217,6 @@ public class MainSwing extends JFrame {
 		gbc_scrollPane.gridy = 0;
 		panel_1.add(scrollPane, gbc_scrollPane);
 		
-		//String[] columnNames = {"Disease", "Number of Occurences"};
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		GridBagConstraints gbc_btnBack = new GridBagConstraints();
