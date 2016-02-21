@@ -41,6 +41,7 @@ public class MainSwing extends JFrame {
 	private JScrollPane scrollPane;
 	private JTextField textField_2;
 	private JLabel lblZipCode;
+	private JButton btnSubmit;
 
 	/**
 	 * Launch the application.
@@ -93,14 +94,15 @@ public class MainSwing extends JFrame {
 		gbc_textField.gridy = 2;
 		panel.add(textField, gbc_textField);
 		textField.setColumns(10);
-		
+		/*
 		lblQuery_1 = new JLabel("Query 2");
 		GridBagConstraints gbc_lblQuery_1 = new GridBagConstraints();
 		gbc_lblQuery_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblQuery_1.gridx = 2;
 		gbc_lblQuery_1.gridy = 3;
 		panel.add(lblQuery_1, gbc_lblQuery_1);
-		
+		*/
+		/*
 		textField_1 = new JTextField();
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
@@ -109,26 +111,22 @@ public class MainSwing extends JFrame {
 		gbc_textField_1.gridy = 4;
 		panel.add(textField_1, gbc_textField_1);
 		textField_1.setColumns(10);
-		
-		DefaultTableModel dft = new DefaultTableModel();
+		*/
 		
 		JButton btnCompare = new JButton("Compare");
 		btnCompare.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				first = textField_1.getText();
-				second = textField.getText();
-				zip = textField_2.getText();
-				names.add(first);
-				names.add(second);
-				a = Main.getCount(first,zip);
-				b = Main.getCount(second,zip);
-				number.add(a);
-				number.add(b);
+				String disease[] = new String[names.size()];
+				for(int c = 0; c < names.size(); c++){
+					disease[c] = names.get(c);
+				}
+				int occurence[] = Main.countMultiNamesOneZip(disease,zip);
+				Main.getFinalArrays(occurence,disease);
 				((DefaultTableModel) table.getModel()).setRowCount(names.size());
 				((DefaultTableModel) table.getModel()).setColumnCount(2);
 				for(int c = 0; c < names.size(); c++){
-					table.getModel().setValueAt(names.get(c), c, 0);
-					table.getModel().setValueAt(number.get(c), c, 1);
+					table.getModel().setValueAt(disease[c], c, 0);
+					table.getModel().setValueAt(occurence[c], c, 1);
 				}
 				((CardLayout) getContentPane().getLayout()).next(getContentPane());
 			}
@@ -149,6 +147,23 @@ public class MainSwing extends JFrame {
 		gbc_textField_2.gridy = 6;
 		panel.add(textField_2, gbc_textField_2);
 		textField_2.setColumns(10);
+		
+		btnSubmit = new JButton("Submit");
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				first = textField.getText();
+				zip = textField_2.getText();
+				textField_2.setEditable(false);
+				names.add(first);
+				number.add(a);
+				textField.setText("");
+			}
+		});
+		GridBagConstraints gbc_btnSubmit = new GridBagConstraints();
+		gbc_btnSubmit.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSubmit.gridx = 2;
+		gbc_btnSubmit.gridy = 7;
+		panel.add(btnSubmit, gbc_btnSubmit);
 		GridBagConstraints gbc_btnCompare = new GridBagConstraints();
 		gbc_btnCompare.insets = new Insets(0, 0, 0, 5);
 		gbc_btnCompare.gridx = 2;
@@ -169,7 +184,8 @@ public class MainSwing extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				names.clear();
 				number.clear();
-				((CardLayout) getContentPane().getLayout()).previous(getContentPane());
+				textField_2.setEditable(true);
+				((CardLayout) getContentPane().getLayout()).show(getContentPane(),"name_1455962462584217000");
 			}
 		});
 		
@@ -181,9 +197,8 @@ public class MainSwing extends JFrame {
 		gbc_scrollPane.gridy = 0;
 		panel_1.add(scrollPane, gbc_scrollPane);
 		
+		//String[] columnNames = {"Disease", "Number of Occurences"};
 		table = new JTable();
-		//table.setModel(new DefaultTableModel(names.size(),2));
-		//table.setModel(new DefaultTableModel(3,3));
 		scrollPane.setViewportView(table);
 		GridBagConstraints gbc_btnBack = new GridBagConstraints();
 		gbc_btnBack.anchor = GridBagConstraints.NORTHWEST;
