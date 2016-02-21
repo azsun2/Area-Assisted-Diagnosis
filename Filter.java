@@ -17,7 +17,7 @@ public class Filter
     }
     
     public boolean disease(String x){
-    	String pattern = "(^[A-z .-]+$)";
+    	String pattern = "(^[A-Za-z.,' -]{1,100}$)";
       Pattern r = Pattern.compile(pattern);
       Matcher m = r.matcher(x);
       if (m.find( )) {
