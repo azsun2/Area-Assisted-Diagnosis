@@ -1,21 +1,28 @@
+
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+import java.awt.FlowLayout;
+
 import javax.swing.JLabel;
-import javax.imageio.ImageIO;
+import javax.print.attribute.standard.NumberUpSupported;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JTextField;
 
-import java.awt.Image;
+import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -23,15 +30,21 @@ import java.awt.CardLayout;
 
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import javax.swing.JComboBox;
 
 public class MainSwing extends JFrame {
 	private String first;
+	private String second;
 	private int a;
+	private int b;
+	private int dist;
 	private ArrayList<String> names = new ArrayList<String>();
 	private ArrayList<Integer> number = new ArrayList<Integer>();
 	private String zip;
 	private JTextField textField;
+	private JTextField textField_1;
 	private JLabel lblQuery;
+	private JLabel lblQuery_1;
 	private JPanel panel_1;
 	private JButton btnBack;
 	private JTable table;
@@ -39,6 +52,8 @@ public class MainSwing extends JFrame {
 	private JTextField textField_2;
 	private JLabel lblZipCode;
 	private JButton btnSubmit;
+	private JLabel lblRange;
+	private JComboBox comboBox;
 
 	/**
 	 * Launch the application.
@@ -67,16 +82,7 @@ public class MainSwing extends JFrame {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		
-		//Input Screen
-			File imageURL = new File("hackbrain.png");
-			Image image = null;
-			try {
-				image = ImageIO.read(imageURL);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		final BackgroundPanel panel = new BackgroundPanel(image);
+		final JPanel panel = new JPanel();
 		getContentPane().add(panel, "name_1455962462584217000");
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
@@ -94,7 +100,7 @@ public class MainSwing extends JFrame {
 		
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
-		GhostText ghostText = new GhostText(textField, "Please enter a disease");
+		GhostText ghostText = new GhostText(textField, "Please enter a illness");
 		gbc_textField.insets = new Insets(0, 5, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 2;
@@ -146,18 +152,8 @@ public class MainSwing extends JFrame {
 		GridBagConstraints gbc_lblZipCode = new GridBagConstraints();
 		gbc_lblZipCode.insets = new Insets(0, 0, 5, 5);
 		gbc_lblZipCode.gridx = 2;
-		gbc_lblZipCode.gridy = 5;
+		gbc_lblZipCode.gridy = 3;
 		panel.add(lblZipCode, gbc_lblZipCode);
-		
-		textField_2 = new JTextField();
-		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		GhostText ghostText1 = new GhostText(textField_2, "Please enter a valid zipcode");
-		gbc_textField_2.insets = new Insets(0, 5, 5, 5);
-		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_2.gridx = 2;
-		gbc_textField_2.gridy = 6;
-		panel.add(textField_2, gbc_textField_2);
-		textField_2.setColumns(10);
 		btnSubmit = new JButton("Submit");
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -173,9 +169,36 @@ public class MainSwing extends JFrame {
 					textField.setText("");
 					textField_2.setText("");
 				}
-				
+				dist = check((String)comboBox.getSelectedItem());
+				comboBox.setEnabled(false);
 			}
 		});
+		
+		textField_2 = new JTextField();
+		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
+		GhostText ghostText1 = new GhostText(textField_2, "Please enter a valid zipcode");
+		gbc_textField_2.insets = new Insets(0, 5, 5, 5);
+		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_2.gridx = 2;
+		gbc_textField_2.gridy = 4;
+		panel.add(textField_2, gbc_textField_2);
+		textField_2.setColumns(10);
+		
+		lblRange = new JLabel("Range");
+		GridBagConstraints gbc_lblRange = new GridBagConstraints();
+		gbc_lblRange.insets = new Insets(0, 0, 5, 5);
+		gbc_lblRange.gridx = 2;
+		gbc_lblRange.gridy = 5;
+		panel.add(lblRange, gbc_lblRange);
+		
+		String distances[]= {"1km","2km","3km","4km","5km"};
+		comboBox = new JComboBox();
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 2;
+		gbc_comboBox.gridy = 6;
+		panel.add(comboBox, gbc_comboBox);
 		GridBagConstraints gbc_btnSubmit = new GridBagConstraints();
 		gbc_btnSubmit.insets = new Insets(0, 0, 5, 5);
 		gbc_btnSubmit.gridx = 2;
@@ -202,6 +225,8 @@ public class MainSwing extends JFrame {
 				names.clear();
 				number.clear();
 				textField_2.setEditable(true);
+				comboBox.setEnabled(true);
+				dist = 0;
 				((CardLayout) getContentPane().getLayout()).show(getContentPane(),"name_1455962462584217000");
 			}
 		});
@@ -221,5 +246,25 @@ public class MainSwing extends JFrame {
 		gbc_btnBack.gridx = 0;
 		gbc_btnBack.gridy = 1;
 		panel_1.add(btnBack, gbc_btnBack);
+	}
+	public int check(String a) {
+		if(a.equals("1km")){
+			return 1;
+		}
+		if(a.equals("2km")){
+			return 2;
+		}
+		if(a.equals("3km")){
+			return 3;
+		}
+		if(a.equals("4km")){
+			return 4;
+		}
+		if(a.equals("5km")){
+			return 5;
+		}
+		else{
+			return 0;
+		}
 	}
 }
