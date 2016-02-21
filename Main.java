@@ -8,10 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Arrays;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
+
 
 public class Main {
 	public static int[] countMultiNamesOneZip(String[] names, String zipcode)
@@ -44,8 +41,21 @@ public class Main {
 		return count;
 	}
 	
+	public static String genPlaceHolders(int size){
+		String s = "(";
+		for (int i = 0; i < size -1; i++){
+			s = s + "?,";
+		}
+		s = s + "?)";
+		return s;
+	}
+	
 	public static HashMap<Integer, Integer> getIds (String disease, String zipcode, HashMap<Integer, Integer> ids){
-		
+		NearZip nz = new NearZip();
+		ArrayList<String> al = nz.zipNeighbors(zipcode);
+		int numZips = al.size();
+		String placeholder = genPlaceHolders(numZips); 
+		System.out.println(placeholder);
 		Connection con = null;
 		PreparedStatement stmt = null;
 		
@@ -57,13 +67,16 @@ public class Main {
 					+ "  select requestlog_id  "
 					+ " from requestlog_terms "
 					+ "  where word=?  "
-					//+ " limit 1000  "
 					+ ")"
 					+ " s1 "
 					+ "join requestlog on s1.requestlog_id=requestlog.id "
-					+ "where requestlog.zip = ?; ");
+					+ "where requestlog.zip in "
+					+ placeholder
+					+ "; ");
 			stmt.setString(1, disease);
-			stmt.setString(2, zipcode);
+			for (int i = 2; i < numZips + 2; i++){
+				stmt.setString(i, al.get(i-2));
+			}
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
 				Integer tempId = rs.getInt("id");
